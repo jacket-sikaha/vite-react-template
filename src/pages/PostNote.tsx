@@ -23,6 +23,7 @@ function PostNote() {
         <Stack spacing={{ xs: 1, sm: 2, md: 2.5 }} direction="column">
           <input type="file" name="a" id="a" multiple />
         </Stack>
+        <h1 className="text-3xl font-bold underline">Hello world!</h1>
       </form>
     </Box>
   );
