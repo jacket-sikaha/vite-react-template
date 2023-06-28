@@ -1,43 +1,22 @@
-import Paper from "@mui/material/Paper";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import {
-  styled,
-  createTheme,
-  ThemeProvider,
-  useTheme,
-} from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useEffect, useRef, useState } from "react";
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
   Chip,
   CircularProgress,
-  Container,
   IconButton,
   Stack,
-  Tab,
-  Tabs,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import { useQuery } from "react-query";
 import { getNotes } from "../services/note";
-import InfiniteScroll from "react-infinite-scroll-component";
-
-const Item = styled(Paper)(({ theme }) => {
-  return {
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    color: theme.palette.text.secondary,
-    flexGrow: 1,
-    margin: 1,
-  };
-});
 
 const tabList = ["推荐", "穿搭", "美食", "彩妆", "影视", "职场"];
 
@@ -118,7 +97,6 @@ export default function Home() {
   const [dataSource, setDataSource] = useState<Map<number, NoteDatatype[]>>(
     new Map()
   );
-  const scrollBox = useRef();
   const theme = useTheme();
   const xs = useMediaQuery(theme.breakpoints.up("xs"));
   const sm = useMediaQuery(theme.breakpoints.up("sm"));
@@ -171,7 +149,7 @@ export default function Home() {
         return;
       }
       if (window.scrollY / scrollBarHeight > 0.8) {
-        console.log("scrollBarHeight", window.scrollY, scrollBarHeight);
+        // console.log("scrollBarHeight", window.scrollY, scrollBarHeight);
         setPage(page + 1);
       }
     };
@@ -184,7 +162,7 @@ export default function Home() {
   return (
     <>
       <div>
-        <Box sx={{ flexGrow: 1, pb: 7, pt: 7 }} ref={scrollBox}>
+        <Box sx={{ flexGrow: 1, pb: 7, pt: 7 }}>
           <Box mt={1.5} mb={1.5}>
             <Stack
               direction="row"
@@ -211,7 +189,6 @@ export default function Home() {
             spacing={{ xs: 1, sm: 2, md: 4, lg: 6 }}
             direction="row"
             justifyContent={"space-evenly"}
-            className="asd"
           >
             {[...new Array(myColumn)].map((_, i) => {
               return (
@@ -223,32 +200,12 @@ export default function Home() {
               );
             })}
           </Stack>
-          {/* </InfiniteScroll> */}
           {isFetching && (
-            <Box sx={{ display: "flex" }} justifyContent={"center"}>
+            <Box sx={{ display: "flex" }} justifyContent={"center"} mt={5}>
               <CircularProgress />
             </Box>
           )}
         </Box>
-      </div>
-    </>
-  );
-}
-function MyComponent() {
-  const theme = useTheme();
-  const xs = useMediaQuery(theme.breakpoints.up("xs"));
-  const sm = useMediaQuery(theme.breakpoints.up("sm"));
-  const md = useMediaQuery(theme.breakpoints.up("md"));
-  const lg = useMediaQuery(theme.breakpoints.up("lg"));
-
-  return (
-    <>
-      <div>{`theme.breakpoints.up('xs') matches: ${xs}`}</div>
-      <div>{`theme.breakpoints.up('sm') matches: ${sm}`}</div>
-      <div>{`theme.breakpoints.up('md') matches: ${md}`}</div>
-      <div>{`theme.breakpoints.up('lg') matches: ${lg}`}</div>
-      <div>
-        column{(xs ? 1 : 0) + (sm ? 1 : 0) + (md ? 1 : 0) + (lg ? 1 : 0) + 1}
       </div>
     </>
   );

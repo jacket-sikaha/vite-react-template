@@ -1,14 +1,7 @@
-import {
-  Box,
-  Typography,
-  IconButton,
-  BottomNavigation,
-  BottomNavigationAction,
-  Paper,
-} from "@mui/material";
-import RestoreIcon from "@mui/icons-material/Restore";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArchiveIcon from "@mui/icons-material/Archive";
+import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
+import LabelOutlinedIcon from "@mui/icons-material/LabelOutlined";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -30,18 +23,20 @@ function Footer() {
                 navigate("/");
                 break;
               case 1:
-                navigate("/a");
+                navigate("/postNote");
                 break;
               default:
-                navigate("/user");
+                navigate("/personal");
                 break;
             }
             setValue(newValue);
           }}
         >
-          <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-          <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-          <BottomNavigationAction label="Archive" icon={<ArchiveIcon />} />
+          <BottomNavigationAction
+            icon={<LabelOutlinedIcon sx={{ transform: "rotate(-90deg)" }} />}
+          />
+          <BottomNavigationAction icon={<AddBoxOutlinedIcon />} />
+          <BottomNavigationAction icon={<PersonOutlineOutlinedIcon />} />
         </BottomNavigation>
       </Paper>
     </>
