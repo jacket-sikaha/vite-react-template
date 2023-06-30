@@ -1,5 +1,6 @@
 import { message } from "antd";
 import axios from "axios";
+import { useRoutes } from "react-router";
 
 const request = axios.create({
   //   baseURL: "https://127.0.0.1/api/",
@@ -47,7 +48,7 @@ request.interceptors.response.use(
   (error) => {
     // 响应错误处理
     console.error("Response interceptor error:", error);
-    if (error.response.data.errMessage === "token 不合法!") {
+    if (error.response.data.errCode === 9999) {
       message.info("请重新登陆！！！");
       setTimeout(() => {
         window.location.href = "/signup";

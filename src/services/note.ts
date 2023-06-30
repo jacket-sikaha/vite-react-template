@@ -7,3 +7,7 @@ export const getNotes = (
 ): Promise<{ result: NoteDatatype[] }> => {
   return request(`/api/note/get/notes/${page}/${pageSize}`);
 };
+
+export const postImage = (formData: FormData): Promise<{ result: string }> => {
+  return request.post(`/api/media/upload/file`, formData);
+};

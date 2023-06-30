@@ -1,9 +1,10 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Modal, Upload, message } from "antd";
+import { MessageOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Drawer, Form, Modal, Upload, message } from "antd";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
 import { Box } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import { postImage } from "../services/note";
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -17,28 +18,18 @@ function PostNote() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-
-    {
-      uid: "-xxx",
-      percent: 50,
-      name: "image.png",
-      status: "uploading",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-5",
-      name: "image.png",
-      status: "error",
-    },
-  ]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
   const form = useRef<HTMLFormElement>(null);
+
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
 
   const handleCancel = () => setPreviewOpen(false);
 
@@ -71,14 +62,33 @@ function PostNote() {
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
     setFileList(newFileList);
 
-  const handleUpload = (file: RcFile) => {
-    console.log("file", file);
-    return;
+  const handleUpload = async () => {
+    const formData = new FormData();
+    const file = fileList.slice(-1)[0];
+    formData.append("file", file.originFileObj as RcFile);
+    formData.append("objectName", file.name);
+    formData.append("folder", "");
+    const res = await postImage(formData).catch((e) => {
+      setFileList(() => {
+        file.status = "error";
+        return [...fileList.slice(0, -1), file];
+      });
+      message.error(e);
+      throw e;
+    });
+    message.success("upload successfully.");
+    setFileList(() => {
+      file.status = "done";
+      file.url = res.result;
+      return [...fileList.slice(0, -1), file];
+    });
   };
 
+  const handleFinish = async (value: any) => {
+    console.log("value", value);
+  };
   useEffect(() => {
     // 检查浏览器是否支持Geolocation API
-    console.log(123123);
     if (window.navigator.geolocation) {
       // 获取当前位置信息
       window.navigator.geolocation.getCurrentPosition(
@@ -103,29 +113,21 @@ function PostNote() {
       console.error("Geolocation is not supported by this browser.");
     }
   }, []);
-  console.log("newFileList", fileList);
   return (
     <Box sx={{ flexGrow: 1, mb: 8, mt: 12 }}>
-      <form ref={form}>
+      <Form onFinish={handleFinish} layout="vertical">
+        <form action="a" encType="" method="post"></form>
         <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12">
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div className="border-b border-gray-900/10 pb-1">
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-6">
               <div className="col-span-full">
-                <label
-                  htmlFor="street-address"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
+                <label className="block text-sm font-medium leading-6 text-gray-900">
                   Image upload
                 </label>
                 <div className="mt-2">
                   <Upload
-                    action={"/api/media/upload/file"}
+                    customRequest={handleUpload}
                     name="file"
-                    headers={{
-                      Authorization:
-                        localStorage.getItem("sikara-note-token") || "",
-                    }}
-                    // action={handleUpload}
                     listType="picture-card"
                     fileList={fileList}
                     onPreview={handlePreview}
@@ -150,38 +152,57 @@ function PostNote() {
               </div>
 
               <div className="col-span-full">
-                <label
-                  htmlFor="title"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                <Form.Item
+                  label={
+                    <div className="block text-sm font-medium leading-6 text-gray-900">
+                      title
+                    </div>
+                  }
+                  name="title"
                 >
-                  Street address
-                </label>
-                <div className="mt-2">
                   <input
                     type="text"
-                    name="title"
-                    id="title"
-                    placeholder="  introduce your note over here"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="introduce your note over here"
+                    className="block w-full rounded-md border-0 px-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
-                </div>
+                </Form.Item>
               </div>
 
               <div className="col-span-full">
-                <label
-                  htmlFor="content"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                <Form.Item
+                  label={
+                    <div className="block text-sm font-medium leading-6 text-gray-900">
+                      Content
+                    </div>
+                  }
+                  name="content"
                 >
-                  Content
-                </label>
-                <div className="mt-2">
                   <textarea
-                    id="content"
-                    name="content"
                     rows={3}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md px-1 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     defaultValue={""}
                   />
+                </Form.Item>
+                <div className="flex gap-3 md:gap-6">
+                  <Button
+                    type="text"
+                    className="rounded-full bg-gray-100 text-black text-sm font-medium"
+                  >
+                    #话题
+                  </Button>
+                  <Button
+                    type="text"
+                    className="rounded-full bg-gray-100 text-black text-sm font-medium"
+                  >
+                    @用户
+                  </Button>
+                  <Button
+                    type="text"
+                    className="flex items-center rounded-full bg-gray-100 text-black text-sm font-medium"
+                  >
+                    <MessageOutlined />
+                    互动组件
+                  </Button>
                 </div>
                 <p className="mt-3 text-sm leading-6 text-gray-600">
                   Write a few sentences about yourself.
@@ -189,24 +210,35 @@ function PostNote() {
               </div>
 
               <div className="sm:col-span-3">
-                <label
-                  htmlFor="location"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                <Form.Item
+                  label={
+                    <div className="block text-sm font-medium leading-6 text-gray-900">
+                      Location
+                    </div>
+                  }
+                  name="location"
                 >
-                  location
-                </label>
-                <div className="mt-2">
-                  <select
-                    id="location"
-                    name="location"
-                    autoComplete="country-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                  >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>Mexico</option>
+                  <input
+                    type="text"
+                    className="block w-full rounded-md border-0 px-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </Form.Item>
+              </div>
+
+              <div className="sm:col-span-3">
+                <Form.Item
+                  label={
+                    <div className="block text-sm font-medium leading-6 text-gray-900">
+                      文章权限
+                    </div>
+                  }
+                  name="rule"
+                >
+                  <select className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                    <option>public</option>
+                    <option>private</option>
                   </select>
-                </div>
+                </Form.Item>
               </div>
             </div>
           </div>
@@ -222,20 +254,26 @@ function PostNote() {
           <button
             type="submit"
             className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={(e) => {
-              e.preventDefault(); // 阻止表单默认的提交行为
-              if (!form.current) {
-                return;
-              }
-              const location = form.current.elements.location.value;
-              console.log("location:", location);
-              console.log(form.current.elements.title.value);
-            }}
+            // onClick={(e) => {
+            //   e.preventDefault(); // 阻止表单默认的提交行为
+            //   if (!form.current) {
+            //     return;
+            //   }
+            //   const location = form.current.elements.location.value;
+            //   console.log("location:", location);
+            //   console.log(form.current.elements.title.value);
+            // }}
           >
             Submit
           </button>
         </div>
-      </form>
+
+        <Drawer placement="bottom" onClose={onClose} open={open}>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </Drawer>
+      </Form>
     </Box>
   );
 }
