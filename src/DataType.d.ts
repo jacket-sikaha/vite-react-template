@@ -26,3 +26,12 @@ declare interface UserMsgDatatype {
   fans: number;
   likes: number;
 }
+
+declare interface AccountDatatype {
+  username: string;
+  password: string;
+  cellPhone: string;
+  email: string;
+  code: string;
+  type: string;
+}

@@ -1,0 +1,49 @@
+<!-- 引入高德地图 JavaScript API -->
+<script src="https://webapi.amap.com/maps?v=2&key=你的高德地图API密钥"></script>
+
+<!-- 创建容器用于显示地图 -->
+<div id="mapContainer" style="width: 100%; height: 400px"></div>
+
+<!-- 创建输入框用于选择收货位置 -->
+<input id="addressInput" type="text" placeholder="选择收货位置" />
+
+<script>
+  // 初始化地图
+  var map = new AMap.Map("mapContainer", {
+    zoom: 14,
+  });
+
+  // 获取用户当前位置并将地图中心设置为当前位置
+  AMap.plugin("AMap.Geolocation", function () {
+    var geolocation = new AMap.Geolocation({
+      enableHighAccuracy: true, // 开启高精度定位
+      timeout: 10000, // 超时时间
+      maximumAge: 0, // 不使用缓存
+    });
+
+    geolocation.getCurrentPosition(function (status, result) {
+      if (status === "complete") {
+        var position = result.position;
+        map.setCenter([position.lng, position.lat]);
+      } else {
+        console.error("获取当前位置失败：", result.message);
+      }
+    });
+  });
+
+  // 使用搜索服务来识别详细的收货位置
+  var autoOptions = {
+    input: "addressInput", // 输入框的 id
+  };
+
+  AMap.plugin("AMap.Autocomplete", function () {
+    var autoComplete = new AMap.Autocomplete(autoOptions);
+
+    // 监听选中事件，获取详细的位置信息
+    AMap.event.addListener(autoComplete, "select", function (e) {
+      var address = e.poi.district + e.poi.address;
+      console.log("收货地址：", address);
+      // 在这里可以将地址信息存储到相应的变量或进行其他操作
+    });
+  });
+</script>

@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import { Box } from "@mui/material";
 import Personal from "./pages/Personal";
 import PostNote from "./pages/PostNote";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           {/* <Route index element={<Home />} /> */}
+          <Route path="signup" element={<Login />} />
           <Route path="postNote" element={<PostNote />} />
           <Route path="personal" element={<Personal />} />
           <Route path="*" element={<NotFound />} />

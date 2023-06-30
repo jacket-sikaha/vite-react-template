@@ -21,6 +21,8 @@ import MaleOutlinedIcon from "@mui/icons-material/MaleOutlined";
 import FemaleOutlinedIcon from "@mui/icons-material/FemaleOutlined";
 import { red } from "@mui/material/colors";
 import { useState } from "react";
+import { accountDetail } from "../services/account";
+import { useQuery } from "react-query";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -33,18 +35,26 @@ const Item = styled(Paper)(({ theme }) => ({
 function Personal() {
   const tabList = ["笔记", "收藏", "点赞"];
   const [selectTab, setSelectTab] = useState([1]);
-  const [userMsg, setUserMsg] = useState<UserMsgDatatype>({
-    id: 1,
-    username: "EN-64979456",
-    nickname: "想养修勾的托尼",
-    avatar:
-      "https://market-1312547758.cos.ap-beijing.myqcloud.com/avatar/2022/09/28/07B443B492E19CCB8430A26D391E5E3E.png",
-    introduction: "debug the world",
-    sex: "男",
-    ip: "天津",
-    follows: 0,
-    fans: 0,
-    likes: 1000,
+  // const [userMsg, setUserMsg] = useState<UserMsgDatatype>({
+  //   id: 1,
+  //   username: "EN-64979456",
+  //   nickname: "想养修勾的托尼",
+  //   avatar:
+  //     "https://market-1312547758.cos.ap-beijing.myqcloud.com/avatar/2022/09/28/07B443B492E19CCB8430A26D391E5E3E.png",
+  //   introduction: "debug the world",
+  //   sex: "男",
+  //   ip: "天津",
+  //   follows: 0,
+  //   fans: 0,
+  //   likes: 1000,
+  // });
+  // 查询
+  const { data, isFetching } = useQuery({
+    queryKey: ["personal-detail"],
+    queryFn: () => accountDetail(),
+    // onSuccess(data) {
+    //   const temp = new Map();
+    // },
   });
   const handleClick = (event: React.SyntheticEvent, index: number): void => {
     setSelectTab(() => {
@@ -75,25 +85,27 @@ function Personal() {
                   width: 66,
                   height: 66,
                 }}
-                src={userMsg.avatar}
+                src={data?.result.avatar}
               />
             }
-            title={<Typography variant="h6">{userMsg.username}</Typography>}
+            title={
+              <Typography variant="h6">{data?.result.username}</Typography>
+            }
             subheader={
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography variant="caption" fontSize={".8rem"} color={"grey"}>
-                  {`小红书号：${userMsg.id}`}
+                  {`小红书号：${data?.result.id}`}
                 </Typography>
                 <Divider orientation="vertical" flexItem sx={{ m: 0.5 }} />
                 <Typography variant="caption" fontSize={".8rem"} color={"grey"}>
-                  {`IP属地：${userMsg.ip}`}
+                  {`IP属地：${data?.result.ip}`}
                 </Typography>
               </Box>
             }
           />
         </Card>
-        <Typography variant="subtitle2">{userMsg.introduction}</Typography>
-        {userMsg.sex === "男" ? (
+        <Typography variant="subtitle2">{data?.result.introduction}</Typography>
+        {data?.result.sex === "男" ? (
           <MaleOutlinedIcon color="primary" />
         ) : (
           <FemaleOutlinedIcon color="error" />
@@ -101,13 +113,13 @@ function Personal() {
         <Box width={{ xs: 190 }}>
           <Grid container justifyContent={"flex-start"}>
             <Grid item xs={4} textAlign={"center"}>
-              {userMsg.follows}
+              {data?.result.follows || 0}
             </Grid>
             <Grid item xs={4} textAlign={"center"}>
-              {userMsg.fans}
+              {data?.result.fans || 0}
             </Grid>
             <Grid item xs textAlign={"center"}>
-              {userMsg.likes}
+              {data?.result.likes || 0}
             </Grid>
             <Grid item xs={4} textAlign={"center"}>
               <Typography variant="caption" color={"grey"}>

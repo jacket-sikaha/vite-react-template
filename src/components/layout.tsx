@@ -23,8 +23,8 @@ function Layout() {
     <Box sx={{ flexGrow: 1 }}>
       <ThemeProvider theme={theme}>
         <AppBar
-          position="fixed"
-          sx={{ height: "5rem", justifyContent: "center" }}
+          position={"fixed"}
+          sx={{ height: "5rem", justifyContent: "center", zIndex: 100 }}
         >
           <Toolbar>
             <Typography
