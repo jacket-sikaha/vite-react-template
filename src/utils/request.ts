@@ -42,18 +42,24 @@ request.interceptors.response.use(
     console.log("response", response);
     if (response.data.result.token) {
       localStorage.setItem("sikara-note-token", response.data.result.token);
+      sessionStorage.setItem(
+        "sikara-note-userID",
+        response.data.result.user.id
+      );
     }
     return response.data;
   },
   (error) => {
     // 响应错误处理
     console.error("Response interceptor error:", error);
-    if (error.response.data.errCode === 9999) {
+    if (error.response.data.errCode === 9999 || error.response.status === 404) {
       message.info("请重新登陆！！！");
       setTimeout(() => {
         window.location.href = "/signup";
       }, 1500);
-      return Promise.reject(error.response.data.errMessage);
+      return Promise.reject(
+        error.response.data.errMessage || error.response.data
+      );
     }
     return Promise.reject(error.response.data);
   }

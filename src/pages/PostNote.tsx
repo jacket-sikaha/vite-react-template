@@ -1,8 +1,16 @@
 import { MessageOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Drawer, Form, Modal, Upload, message } from "antd";
+import { Avatar, Button, Drawer, Form, Modal, Upload, message } from "antd";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
-import { Box } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { postImage } from "../services/note";
 
@@ -18,13 +26,58 @@ function PostNote() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const form = useRef<HTMLFormElement>(null);
-
   const [open, setOpen] = useState(false);
+  const [clickType, setClickType] = useState(false);
+  const [textArea, setTextArea] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [userList, setUserList] = useState<any[]>(
+    [
+      "小明",
+      "大华",
+      "张三",
+      "李四",
+      "王五",
+      "赵六",
+      "陈七",
+      "刘八",
+      "吴九",
+      "钱十",
+      "周十一",
+      "孙十二",
+      "郑十三",
+      "马十四",
+      "黄十五",
+      "朱十六",
+    ].map((str) => ({
+      id: str,
+      nickName: str,
+      avatar:
+        "https://market-1312547758.cos.ap-beijing.myqcloud.com/avatar/2022/09/28/07B443B492E19CCB8430A26D391E5E3E.png",
+    }))
+  );
+  const [userSelected, setUserSelected] = useState<string[]>([]);
+  const [topicList, setTopicList] = useState<string[]>([
+    "科技创新与未来发展",
+    "环境保护与可持续发展",
+    "健康生活与心理幸福",
+    "教育改革与学习方法",
+    "文化多样性与传统文化保护",
+    "社会公平与公正法治",
+    "创业精神与职业发展",
+    "城市规划与可持续城市设计",
+    "人工智能与机器学习",
+    "未来交通与智能出行",
+    "医疗技术与健康关怀",
+    "社交媒体与数字社交",
+    "自然灾害应对与减灾措施",
+    "金融科技与数字支付",
+    "青年领袖与社会责任",
+    "互联网安全与个人隐私保护",
+  ]);
 
-  const showDrawer = () => {
+  const showDrawer = (type: boolean) => {
     setOpen(true);
+    setClickType(type);
   };
 
   const onClose = () => {
@@ -84,9 +137,29 @@ function PostNote() {
     });
   };
 
+  const handleToggle = (value: string) => () => {
+    const currentIndex = userSelected.indexOf(value);
+    const newChecked = [...userSelected];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+    console.log("newChecked", newChecked);
+    setUserSelected(newChecked);
+  };
+
+  const handleTextAreaChange = (e) => {
+    console.log(e.target.value);
+    if (e.target.value.indexOf("#") > -1) {
+      showDrawer(true);
+    }
+  };
   const handleFinish = async (value: any) => {
     console.log("value", value);
   };
+
   useEffect(() => {
     // 检查浏览器是否支持Geolocation API
     if (window.navigator.geolocation) {
@@ -116,7 +189,6 @@ function PostNote() {
   return (
     <Box sx={{ flexGrow: 1, mb: 8, mt: 12 }}>
       <Form onFinish={handleFinish} layout="vertical">
-        <form action="a" encType="" method="post"></form>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-1">
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-6">
@@ -179,26 +251,29 @@ function PostNote() {
                 >
                   <textarea
                     rows={3}
+                    value={textArea}
+                    onChange={handleTextAreaChange}
                     className="block w-full rounded-md px-1 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    defaultValue={""}
                   />
                 </Form.Item>
                 <div className="flex gap-3 md:gap-6">
                   <Button
                     type="text"
                     className="rounded-full bg-gray-100 text-black text-sm font-medium"
+                    onClick={() => showDrawer(false)}
                   >
                     #话题
                   </Button>
                   <Button
                     type="text"
                     className="rounded-full bg-gray-100 text-black text-sm font-medium"
+                    onClick={() => showDrawer(true)}
                   >
                     @用户
                   </Button>
                   <Button
                     type="text"
-                    className="flex items-center rounded-full bg-gray-100 text-black text-sm font-medium"
+                    className="flex  items-center rounded-full bg-gray-100 text-black text-sm font-medium"
                   >
                     <MessageOutlined />
                     互动组件
@@ -221,6 +296,9 @@ function PostNote() {
                   <input
                     type="text"
                     className="block w-full rounded-md border-0 px-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    onFocus={() => {
+                      // window.scrollBy({ top: -300 });
+                    }}
                   />
                 </Form.Item>
               </div>
@@ -228,8 +306,8 @@ function PostNote() {
               <div className="sm:col-span-3">
                 <Form.Item
                   label={
-                    <div className="block text-sm font-medium leading-6 text-gray-900">
-                      文章权限
+                    <div className=" block  text-sm font-medium  leading-6   text-gray-900">
+                      权限
                     </div>
                   }
                   name="rule"
@@ -268,10 +346,59 @@ function PostNote() {
           </button>
         </div>
 
-        <Drawer placement="bottom" onClose={onClose} open={open}>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+        <Drawer
+          placement="bottom"
+          closable={false}
+          onClose={onClose}
+          open={open}
+        >
+          {clickType ? (
+            <List dense sx={{ width: "100%", maxWidth: 360, overflow: "auto" }}>
+              {userList.map(({ id, nickName, avatar }) => {
+                const labelId = `checkbox-list-secondary-label-${id}`;
+                return (
+                  <ListItem
+                    key={id}
+                    secondaryAction={
+                      <Checkbox
+                        edge="end"
+                        checked={userSelected.indexOf(nickName) !== -1}
+                        disableRipple
+                        inputProps={{ "aria-labelledby": labelId }}
+                      />
+                    }
+                    disablePadding
+                  >
+                    <ListItemButton
+                      role={undefined}
+                      onClick={handleToggle(nickName)}
+                      dense
+                    >
+                      <ListItemAvatar>
+                        <Avatar alt={`Avatar n°${nickName}`} src={avatar} />
+                      </ListItemAvatar>
+                      <ListItemText id={labelId} primary={nickName} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
+            <div className="flex w-full flex-wrap gap-6">
+              {topicList.map((item) => {
+                return (
+                  <Button
+                    key={item}
+                    type="text"
+                    className="rounded-full bg-gray-100 text-black text-sm font-medium"
+                    // onClick={() => showDrawer(true)}
+                  >
+                    #{item}
+                  </Button>
+                );
+              })}
+            </div>
+          )}
         </Drawer>
       </Form>
     </Box>

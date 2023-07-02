@@ -48,10 +48,10 @@ function Personal() {
   //   fans: 0,
   //   likes: 1000,
   // });
-  // 查询
   const { data, isFetching } = useQuery({
     queryKey: ["personal-detail"],
-    queryFn: () => accountDetail(),
+    queryFn: () =>
+      accountDetail(sessionStorage.getItem("sikara-note-userID") || ""),
     // onSuccess(data) {
     //   const temp = new Map();
     // },
