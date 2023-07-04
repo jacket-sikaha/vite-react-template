@@ -1,0 +1,5 @@
+ttt > *:focus {
+  outline: none; /* 移除默认聚焦边框 */
+  border-color: #ddd; /* 自定义聚焦时的边框颜色 */
+  color: aqua;
+}

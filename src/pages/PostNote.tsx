@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { postImage } from "../services/note";
+import Test from "./test";
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -187,221 +188,214 @@ function PostNote() {
     }
   }, []);
   return (
-    <Box sx={{ flexGrow: 1, mb: 8, mt: 12 }}>
-      <Form onFinish={handleFinish} layout="vertical">
-        <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-1">
-            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-6">
-              <div className="col-span-full">
-                <label className="block text-sm font-medium leading-6 text-gray-900">
-                  Image upload
-                </label>
-                <div className="mt-2">
-                  <Upload
-                    customRequest={handleUpload}
-                    name="file"
-                    listType="picture-card"
-                    fileList={fileList}
-                    onPreview={handlePreview}
-                    onChange={handleChange}
-                    beforeUpload={beforeUpload}
-                  >
-                    {fileList.length >= 8 ? null : uploadButton}
-                  </Upload>
-                  <Modal
-                    open={previewOpen}
-                    title={previewTitle}
-                    footer={null}
-                    onCancel={handleCancel}
-                  >
-                    <img
-                      alt="example"
-                      style={{ width: "100%" }}
-                      src={previewImage}
-                    />
-                  </Modal>
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <Form.Item
-                  label={
-                    <div className="block text-sm font-medium leading-6 text-gray-900">
-                      title
-                    </div>
-                  }
-                  name="title"
+    <Form onFinish={handleFinish} layout="vertical" className="my-16">
+      <div className="space-y-12">
+        <div className="border-b border-gray-900/10 pb-1">
+          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-6">
+            <div className="col-span-full">
+              <label className="block text-sm font-medium leading-6 text-gray-900">
+                Image upload
+              </label>
+              <div className="mt-2">
+                <Upload
+                  customRequest={handleUpload}
+                  name="file"
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChange}
+                  beforeUpload={beforeUpload}
                 >
-                  <input
-                    type="text"
-                    placeholder="introduce your note over here"
-                    className="block w-full rounded-md border-0 px-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  {fileList.length >= 8 ? null : uploadButton}
+                </Upload>
+                <Modal
+                  open={previewOpen}
+                  title={previewTitle}
+                  footer={null}
+                  onCancel={handleCancel}
+                >
+                  <img
+                    alt="example"
+                    style={{ width: "100%" }}
+                    src={previewImage}
                   />
-                </Form.Item>
+                </Modal>
               </div>
+            </div>
 
-              <div className="col-span-full">
-                <Form.Item
-                  label={
-                    <div className="block text-sm font-medium leading-6 text-gray-900">
-                      Content
-                    </div>
-                  }
-                  name="content"
-                >
-                  <textarea
-                    rows={3}
-                    value={textArea}
-                    onChange={handleTextAreaChange}
-                    className="block w-full rounded-md px-1 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </Form.Item>
-                <div className="flex gap-3 md:gap-6">
-                  <Button
-                    type="text"
-                    className="rounded-full bg-gray-100 text-black text-sm font-medium"
-                    onClick={() => showDrawer(false)}
-                  >
-                    #话题
-                  </Button>
-                  <Button
-                    type="text"
-                    className="rounded-full bg-gray-100 text-black text-sm font-medium"
-                    onClick={() => showDrawer(true)}
-                  >
-                    @用户
-                  </Button>
-                  <Button
-                    type="text"
-                    className="flex  items-center rounded-full bg-gray-100 text-black text-sm font-medium"
-                  >
-                    <MessageOutlined />
-                    互动组件
-                  </Button>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Write a few sentences about yourself.
-                </p>
-              </div>
+            <div className="col-span-full">
+              <Form.Item
+                label={
+                  <div className="block text-sm font-medium leading-6 text-gray-900">
+                    title
+                  </div>
+                }
+                name="title"
+              >
+                <input
+                  type="text"
+                  placeholder="introduce your note over here"
+                  className="block w-full rounded-md border-0 px-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </Form.Item>
+            </div>
 
-              <div className="sm:col-span-3">
-                <Form.Item
-                  label={
-                    <div className="block text-sm font-medium leading-6 text-gray-900">
-                      Location
-                    </div>
-                  }
-                  name="location"
+            <div className="col-span-full">
+              <Form.Item
+                label={
+                  <div className="block text-sm font-medium leading-6 text-gray-900">
+                    Content
+                  </div>
+                }
+                name="content"
+              >
+                <textarea
+                  rows={3}
+                  value={textArea}
+                  onChange={handleTextAreaChange}
+                  className="block w-full rounded-md px-1 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </Form.Item>
+              <div className="flex gap-3 md:gap-6">
+                <Button
+                  type="text"
+                  className="rounded-full bg-gray-100 text-black text-sm font-medium"
+                  onClick={() => showDrawer(false)}
                 >
-                  <input
-                    type="text"
-                    className="block w-full rounded-md border-0 px-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    onFocus={() => {
-                      // window.scrollBy({ top: -300 });
-                    }}
-                  />
-                </Form.Item>
+                  #话题
+                </Button>
+                <Button
+                  type="text"
+                  className="rounded-full bg-gray-100 text-black text-sm font-medium"
+                  onClick={() => showDrawer(true)}
+                >
+                  @用户
+                </Button>
+                <Button
+                  type="text"
+                  className="flex  items-center rounded-full bg-gray-100 text-black text-sm font-medium"
+                >
+                  <MessageOutlined />
+                  互动组件
+                </Button>
               </div>
+              <p className="mt-3 text-sm leading-6 text-gray-600">
+                Write a few sentences about yourself.
+              </p>
+            </div>
 
-              <div className="sm:col-span-3">
-                <Form.Item
-                  label={
-                    <div className=" block  text-sm font-medium  leading-6   text-gray-900">
-                      权限
-                    </div>
-                  }
-                  name="rule"
-                >
-                  <select className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                    <option>public</option>
-                    <option>private</option>
-                  </select>
-                </Form.Item>
-              </div>
+            <div className="sm:col-span-3">
+              <Form.Item
+                label={
+                  <div className="block text-sm font-medium leading-6 text-gray-900">
+                    Location
+                  </div>
+                }
+                name="location"
+              >
+                <input
+                  type="text"
+                  className="block w-full rounded-md border-0 px-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  onFocus={() => {
+                    // window.scrollBy({ top: -300 });
+                  }}
+                />
+              </Form.Item>
+            </div>
+
+            <div className="sm:col-span-3">
+              <Form.Item
+                label={
+                  <div className=" block  text-sm font-medium  leading-6   text-gray-900">
+                    权限
+                  </div>
+                }
+                name="rule"
+              >
+                <select className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                  <option>public</option>
+                  <option>private</option>
+                </select>
+              </Form.Item>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-6 flex items-center justify-end gap-x-6">
-          <button
-            type="reset"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            // onClick={(e) => {
-            //   e.preventDefault(); // 阻止表单默认的提交行为
-            //   if (!form.current) {
-            //     return;
-            //   }
-            //   const location = form.current.elements.location.value;
-            //   console.log("location:", location);
-            //   console.log(form.current.elements.title.value);
-            // }}
-          >
-            Submit
-          </button>
-        </div>
-
-        <Drawer
-          placement="bottom"
-          closable={false}
-          onClose={onClose}
-          open={open}
+      <div className="mt-6 flex items-center justify-end gap-x-6">
+        <button
+          type="reset"
+          className="text-sm font-semibold leading-6 text-gray-900"
         >
-          {clickType ? (
-            <List dense sx={{ width: "100%", maxWidth: 360, overflow: "auto" }}>
-              {userList.map(({ id, nickName, avatar }) => {
-                const labelId = `checkbox-list-secondary-label-${id}`;
-                return (
-                  <ListItem
-                    key={id}
-                    secondaryAction={
-                      <Checkbox
-                        edge="end"
-                        checked={userSelected.indexOf(nickName) !== -1}
-                        disableRipple
-                        inputProps={{ "aria-labelledby": labelId }}
-                      />
-                    }
-                    disablePadding
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          // onClick={(e) => {
+          //   e.preventDefault(); // 阻止表单默认的提交行为
+          //   if (!form.current) {
+          //     return;
+          //   }
+          //   const location = form.current.elements.location.value;
+          //   console.log("location:", location);
+          //   console.log(form.current.elements.title.value);
+          // }}
+        >
+          Submit
+        </button>
+      </div>
+      <Test />
+      <Drawer placement="bottom" closable={false} onClose={onClose} open={open}>
+        {clickType ? (
+          <List dense sx={{ width: "100%", maxWidth: 360, overflow: "auto" }}>
+            {userList.map(({ id, nickName, avatar }) => {
+              const labelId = `checkbox-list-secondary-label-${id}`;
+              return (
+                <ListItem
+                  key={id}
+                  secondaryAction={
+                    <Checkbox
+                      edge="end"
+                      checked={userSelected.indexOf(nickName) !== -1}
+                      disableRipple
+                      inputProps={{ "aria-labelledby": labelId }}
+                    />
+                  }
+                  disablePadding
+                >
+                  <ListItemButton
+                    role={undefined}
+                    onClick={handleToggle(nickName)}
+                    dense
                   >
-                    <ListItemButton
-                      role={undefined}
-                      onClick={handleToggle(nickName)}
-                      dense
-                    >
-                      <ListItemAvatar>
-                        <Avatar alt={`Avatar n°${nickName}`} src={avatar} />
-                      </ListItemAvatar>
-                      <ListItemText id={labelId} primary={nickName} />
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
-            </List>
-          ) : (
-            <div className="flex w-full flex-wrap gap-6">
-              {topicList.map((item) => {
-                return (
-                  <Button
-                    key={item}
-                    type="text"
-                    className="rounded-full bg-gray-100 text-black text-sm font-medium"
-                    // onClick={() => showDrawer(true)}
-                  >
-                    #{item}
-                  </Button>
-                );
-              })}
-            </div>
-          )}
-        </Drawer>
-      </Form>
-    </Box>
+                    <ListItemAvatar>
+                      <Avatar alt={`Avatar n°${nickName}`} src={avatar} />
+                    </ListItemAvatar>
+                    <ListItemText id={labelId} primary={nickName} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+        ) : (
+          <div className="flex w-full flex-wrap gap-6">
+            {topicList.map((item) => {
+              return (
+                <Button
+                  key={item}
+                  type="text"
+                  className="rounded-full bg-gray-100 text-black text-sm font-medium"
+                  // onClick={() => showDrawer(true)}
+                >
+                  #{item}
+                </Button>
+              );
+            })}
+          </div>
+        )}
+      </Drawer>
+    </Form>
   );
 }
 
