@@ -22,3 +22,7 @@ export const getFollower = (
 ): Promise<{ result: UserMsgDatatype[] }> => {
   return request.get(`/api/follow/each/other/${pageSize}/${page}`);
 };
+
+export const publishNote = (formData: any): Promise<{ result: string }> => {
+  return request.post(`/api/note/publish`, formData);
+};

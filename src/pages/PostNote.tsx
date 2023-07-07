@@ -1,5 +1,14 @@
 import { MessageOutlined, PlusOutlined } from "@ant-design/icons";
-import { Avatar, Button, Drawer, Form, Modal, Upload, message } from "antd";
+import {
+  Avatar,
+  Button,
+  Drawer,
+  Form,
+  Modal,
+  Upload,
+  message,
+  Select,
+} from "antd";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
 import {
@@ -13,7 +22,12 @@ import {
 } from "@mui/material";
 import { v4 } from "uuid";
 import { useEffect, useRef, useState } from "react";
-import { getFollower, getTopic, postImage } from "../services/note";
+import {
+  getFollower,
+  getTopic,
+  postImage,
+  publishNote,
+} from "../services/note";
 import ReactQuillEditor from "../components/ReactQuillEditor";
 import { useForm } from "antd/es/form/Form";
 import { useQuery } from "react-query";
@@ -41,9 +55,9 @@ const textParseHTML = (target: string) => {
         `<a href="${v4()}" style="color: rgb(153, 51, 255);">${str}</a>`
       );
     });
-    line.match(/@[\u4e00-\u9fff\w\d]+\s/gm)?.forEach((str) => {
-      tmp = tmp.replace(new RegExp(str, "g"), `<a href="${v4()}">${str}</a>`);
-    });
+    // line.match(/@[\u4e00-\u9fff\w\d]+/gm)?.forEach((str) => {
+    //   tmp = tmp.replace(new RegExp(str, "g"), `<a href="${v4()}">${str}</a>`);
+    // });
     res += `<p>${tmp}</p>`;
   });
   return res;
@@ -76,13 +90,16 @@ function PostNote() {
       "黄十五",
       "朱十六",
     ].map((str) => ({
-      id: str,
+      id: v4(),
       nickName: str,
       avatar:
         "https://market-1312547758.cos.ap-beijing.myqcloud.com/avatar/2022/09/28/07B443B492E19CCB8430A26D391E5E3E.png",
     }))
   );
   const [userSelected, setUserSelected] = useState<number[]>([]);
+  const topicSelected = useRef<Set<string>>(new Set());
+  const beforeChangeText = useRef<string>("");
+  // const [topicSelected, setTopicSelected] = useState<Set<string>>(new Set());
 
   const [form] = useForm();
 
@@ -167,58 +184,82 @@ function PostNote() {
   const handleToggle = (id: number, value: string) => () => {
     const newChecked = new Set(userSelected);
     newChecked.add(id);
-    handleAddUserOrTopic(value, "@");
+    // handleAddUserOrTopic(value, "@");
     setUserSelected([...newChecked]);
+    form.setFieldValue("callUsers", [...newChecked]);
+    onClose();
   };
 
   const handleAddUserOrTopic = (value: string, type: "@" | "#") => {
     let str = "";
+    let res = "";
+    if (type === "#") {
+      topicSelected.current.add(`${type}${value}`);
+    }
     if (!focusFlag.current) {
-      str =
-        form.getFieldValue("content").text.slice(0, -1) + `${type}${value} `;
+      str = form.getFieldValue("content").text.slice(0, -1) + `${type}${value}`;
     } else {
       str = form.getFieldValue("content").text;
       str =
         str.slice(0, cursorIndex) +
-        `${value} ` +
+        `${value}` +
         str.slice(cursorIndex, str.length);
     }
+    [...topicSelected.current].forEach((target) => {
+      str = str.replace(new RegExp(target, "g"), `${target} `);
+    });
+    str.split("\n").forEach((line) => {
+      if (!line) {
+        return;
+      }
+      let tmp = line;
+      line.match(/#[\u4e00-\u9fff\w\d]+/gm)?.forEach((str) => {
+        if (topicSelected.current.has(str)) {
+          tmp = tmp.replace(
+            new RegExp(str, "g"),
+            `<a href="${v4()}" style="color: rgb(153, 51, 255);">${str}</a>`
+          );
+        }
+      });
+      res += `<p>${tmp}</p>`;
+    });
     form.setFieldValue("content", {
-      html: textParseHTML(str),
+      html: res,
     });
     onClose();
   };
 
   const handleFinish = async (value: any) => {
-    console.log("value", value);
-    const tempMap = new Map();
-    dataFollower?.result.forEach(({ id, nickName }) => {
-      if (userSelected.includes(id)) {
-        tempMap.set(id, nickName);
-      }
-    });
+    const title = value.title;
+    const content = value.content?.text;
+    const location = value.location;
+    const feeling = ["Pleasant", "Relaxing", "Unforgettable"];
+    const topics = [
+      ...new Set(
+        value.content.text
+          .replace(new RegExp(`\n`, "g"), " ")
+          .match(/#[\u4e00-\u9fff\w\d]+\s/gm)
+      ),
+    ];
+    const callUsers = value.callUsers ?? [];
+    const images = fileList.map((item) => item.url);
 
-    const callUsers = value.content.text
-      .match(/@[\u4e00-\u9fff\w\d]+/gm)
-      .map((str: string) => str.substring(1));
-    const topics = value.content.text
-      .match(/#[\u4e00-\u9fff\w\d]+/gm)
-      .map((str: string) => str.substring(1));
-    console.log("111", value.content.text.match(/@[\u4e00-\u9fff\w\d]+\s/gm));
-    console.log("222", value.content.text.match(/@[\u4e00-\u9fff\w\d]+/gm));
-    console.log(
-      "333",
-      [...value.content.text.matchAll(/@[\u4e00-\u9fff\w\d]+/gm)].map(
-        (item, i) =>
-          // value.content.text.slice(
-          //   item.index + item[0].length,
-          //   item.index + item[0].length + 1
-          // )
-          // value.content.text.slice(item.index, item.index + item[0].length)
-          value.content.text.slice(0, item.index) +
-          value.content.text.slice(item.index + item[0].length)
-      )
-    );
+    try {
+      const res = await publishNote({
+        title,
+        content,
+        location,
+        feeling,
+        topics,
+        callUsers,
+        images,
+      });
+      form.resetFields();
+      message.success("success");
+      console.log("res", res);
+    } catch (error: any) {
+      message.error(error.errMessage);
+    }
   };
 
   // useEffect(() => {
@@ -250,7 +291,36 @@ function PostNote() {
 
   return (
     <Box sx={{ flexGrow: 1, mb: 8, mt: 12 }}>
-      <Form onFinish={handleFinish} layout="vertical" form={form}>
+      <Form
+        onFinish={handleFinish}
+        layout="vertical"
+        form={form}
+        onValuesChange={(changedValues: any, values: any) => {
+          if (changedValues.content) {
+            const { html, text } = changedValues.content;
+            const check = new Set(
+              [...topicSelected.current].map((str) => str.slice(0, -1))
+            );
+            const old = beforeChangeText.current?.match(
+              /#[\u4e00-\u9fff\w\d]+/gm
+            );
+            const neww = text
+              ?.match(/#[\u4e00-\u9fff\w\d]+/gm)
+              ?.find((item: string, i) => {
+                if (check.has(item)) {
+                  return item;
+                }
+              });
+            const res = html.replace(neww, "");
+            console.log("neww", old, neww);
+            form.setFieldValue("content", {
+              html: res,
+              text: text.replace(neww, ""),
+            });
+            beforeChangeText.current = text;
+          }
+        }}
+      >
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-1">
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-6">
@@ -293,6 +363,7 @@ function PostNote() {
                     </div>
                   }
                   name="title"
+                  required
                 >
                   <input
                     type="text"
@@ -310,9 +381,24 @@ function PostNote() {
                     </div>
                   }
                   name="content"
+                  required
                   initialValue={{ html: "", text: "" }}
                 >
                   <ReactQuillEditor showDrawer={showDrawer} />
+                </Form.Item>
+                <Form.Item name="callUsers" className="-mt-6">
+                  <Select
+                    mode="multiple"
+                    open={false}
+                    bordered={false}
+                    showArrow={false}
+                    value={userSelected}
+                    onChange={(val) => setUserSelected(val)}
+                    options={userList.map(({ id, nickName }) => ({
+                      value: id,
+                      label: "@" + nickName,
+                    }))}
+                  />
                 </Form.Item>
                 <div className="flex gap-3 md:gap-6">
                   <Button
@@ -337,9 +423,6 @@ function PostNote() {
                     互动组件
                   </Button>
                 </div>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Write a few sentences about yourself.
-                </p>
               </div>
 
               <div className="sm:col-span-3">
@@ -350,6 +433,7 @@ function PostNote() {
                     </div>
                   }
                   name="location"
+                  required
                 >
                   <input
                     type="text"

@@ -5,11 +5,11 @@ declare interface NoteDatatype {
   userAvatar: string;
   title: string;
   content: string;
-  images: string;
+  images: string[];
   location: string;
-  feeling: string;
-  callUsers: string[] | number[];
-  topic: string[];
+  feeling: string[];
+  callUsers: number[];
+  topics: string[];
   likes: number;
   comments: number;
   collections: number;
