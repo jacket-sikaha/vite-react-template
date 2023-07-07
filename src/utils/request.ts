@@ -40,7 +40,7 @@ request.interceptors.response.use(
     // 对响应数据进行处理
     // 可以进行数据转换、错误处理等操作
     console.log("response", response);
-    if (response.data.result.token) {
+    if (response.data?.result?.token) {
       localStorage.setItem("sikara-note-token", response.data.result.token);
       sessionStorage.setItem(
         "sikara-note-userID",

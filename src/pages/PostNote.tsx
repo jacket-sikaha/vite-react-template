@@ -255,8 +255,8 @@ function PostNote() {
         images,
       });
       form.resetFields();
+      setFileList([]);
       message.success("success");
-      console.log("res", res);
     } catch (error: any) {
       message.error(error.errMessage);
     }
