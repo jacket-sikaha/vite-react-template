@@ -11,3 +11,14 @@ export const getNotes = (
 export const postImage = (formData: FormData): Promise<{ result: string }> => {
   return request.post(`/api/media/upload/file`, formData);
 };
+
+export const getTopic = (): Promise<{ result: string[] }> => {
+  return request.get(`/api/topic/get/8`);
+};
+
+export const getFollower = (
+  page = 0,
+  pageSize = 10
+): Promise<{ result: UserMsgDatatype[] }> => {
+  return request.get(`/api/follow/each/other/${pageSize}/${page}`);
+};

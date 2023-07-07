@@ -35,19 +35,6 @@ const Item = styled(Paper)(({ theme }) => ({
 function Personal() {
   const tabList = ["笔记", "收藏", "点赞"];
   const [selectTab, setSelectTab] = useState([1]);
-  // const [userMsg, setUserMsg] = useState<UserMsgDatatype>({
-  //   id: 1,
-  //   username: "EN-64979456",
-  //   nickname: "想养修勾的托尼",
-  //   avatar:
-  //     "https://market-1312547758.cos.ap-beijing.myqcloud.com/avatar/2022/09/28/07B443B492E19CCB8430A26D391E5E3E.png",
-  //   introduction: "debug the world",
-  //   sex: "男",
-  //   ip: "天津",
-  //   follows: 0,
-  //   fans: 0,
-  //   likes: 1000,
-  // });
   const { data, isFetching } = useQuery({
     queryKey: ["personal-detail"],
     queryFn: () =>

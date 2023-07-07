@@ -8,5 +8,8 @@ export const accountLogin = (
   result: unknown;
   successful: boolean;
 }> => {
-  return request.post(`/api/auth/login`, { type: "Account", ...userMsg });
+  return request.post(`/api/auth/login`, {
+    type: "Account",
+    ...userMsg,
+  });
 };

@@ -8,6 +8,8 @@ declare interface NoteDatatype {
   images: string;
   location: string;
   feeling: string;
+  callUsers: string[] | number[];
+  topic: string[];
   likes: number;
   comments: number;
   collections: number;
@@ -18,6 +20,7 @@ declare interface UserMsgDatatype {
   id: number;
   username: string;
   nickname: string;
+  nickName: string;
   avatar: string;
   introduction: string;
   sex: string;
