@@ -8,8 +8,19 @@ import { Box } from "@mui/material";
 import Personal from "./pages/Personal";
 import PostNote from "./pages/PostNote";
 import Login from "./pages/Login";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    window._AMapSecurityConfig = {
+      securityJsCode: import.meta.env.VITE_SecurityJsCode,
+    };
+
+    return () => {
+      window._AMapSecurityConfig = null;
+    };
+  }, []);
+
   return (
     <>
       <Layout />

@@ -25,6 +25,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   getFollower,
   getTopic,
+  getUserLocation,
   postImage,
   publishNote,
 } from "../services/note";
@@ -111,9 +112,9 @@ function PostNote() {
   const { data: dataFollower, isFetching } = useQuery({
     queryKey: ["getFollower"],
     queryFn: () => getFollower(),
-    // onSuccess(data) {
-    //   const temp = new Map();
-    // },
+    async onSuccess(data) {
+      form.setFieldValue("location", (await getUserLocation()) ?? "");
+    },
   });
 
   const showDrawer = (type: boolean, index?: number) => {
@@ -262,35 +263,9 @@ function PostNote() {
     }
   };
 
-  // useEffect(() => {
-  //   // 检查浏览器是否支持Geolocation API
-  //   if (window.navigator.geolocation) {
-  //     // 获取当前位置信息
-  //     window.navigator.geolocation.getCurrentPosition(
-  //       function (position) {
-  //         // 成功回调函数
-  //         const latitude = position.coords.latitude; // 经度
-  //         const longitude = position.coords.longitude; // 纬度
-  //         const altitude = position.coords.altitude; // 海拔高度（可选）
-
-  //         // 在此处对位置信息进行处理
-  //         console.log("Latitude:", latitude);
-  //         console.log("Longitude:", longitude);
-  //         console.log("Altitude:", altitude);
-  //       },
-  //       function (error) {
-  //         // 失败回调函数
-  //         console.error("Error code:", error.code);
-  //         console.error("Error message:", error.message);
-  //       }
-  //     );
-  //   } else {
-  //     console.error("Geolocation is not supported by this browser.");
-  //   }
-  // }, []);
-
   return (
     <Box sx={{ flexGrow: 1, mb: 8, mt: 12 }}>
+      <div id="map" className=" hidden" />
       <Form
         onFinish={handleFinish}
         layout="vertical"
