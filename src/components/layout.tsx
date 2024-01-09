@@ -1,64 +1,57 @@
-import { Box, AppBar, Toolbar, Typography, IconButton } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import MenuIcon from "@mui/icons-material/Menu";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import React, { memo, useMemo, useState } from "react";
+import Box from "@mui/joy/Box";
+import Drawer from "@mui/joy/Drawer";
+import List from "@mui/joy/List";
+import Divider from "@mui/joy/Divider";
+import ListItem from "@mui/joy/ListItem";
+import ListItemButton from "@mui/joy/ListItemButton";
+import Menu from "@mui/icons-material/Menu";
+import IconButton from "@mui/joy/IconButton";
+import { DefaultRoutes } from "../config/route";
+import { Link } from "react-router-dom";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#fff",
-      // contrastText: "#fff",
-    },
-    secondary: {
-      light: "#ff7961",
-      main: "#f44336",
-      dark: "#ba000d",
-      contrastText: "#000",
-    },
-  },
-});
+const Layout = () => {
+  const [open, setOpen] = useState(false);
+  const pathList = useMemo(() => {
+    return DefaultRoutes[0].children.map(({ path, name }) => ({ path, name }));
+  }, []);
 
-function Layout() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <ThemeProvider theme={theme}>
-        <AppBar
-          position="fixed"
-          sx={{ height: "5rem", justifyContent: "center" }}
+    <div className="w-full h-full">
+      <IconButton
+        variant="outlined"
+        color="neutral"
+        onClick={() => setOpen(true)}
+      >
+        <Menu />
+      </IconButton>
+      <Drawer size={"sm"} open={open} onClose={() => setOpen(false)}>
+        <Box
+          role="presentation"
+          onClick={() => setOpen(false)}
+          onKeyDown={() => setOpen(false)}
         >
-          <Toolbar>
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/"
-              sx={{
-                mr: 2,
-                display: "flex",
-                flexGrow: 1,
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              LOGO
-            </Typography>
-
-            <Box>
-              <IconButton size="large" edge="start" color="inherit">
-                <SearchIcon />
-              </IconButton>
-              <IconButton size="large" edge="start" color="inherit">
-                <MenuIcon />
-              </IconButton>
-            </Box>
-          </Toolbar>
-        </AppBar>
-      </ThemeProvider>
-    </Box>
+          <List>
+            {pathList.map(({ path, name }) => (
+              <ListItem key={path}>
+                <ListItemButton>
+                  <Link to={path}>{name}</Link>
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {["All mail", "Trash", "Spam"].map((text) => (
+              <ListItem key={text}>
+                <ListItemButton>{text}</ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+    </div>
   );
-}
+};
 
 export default Layout;

@@ -10,17 +10,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.1",
+    "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",
+    "@mui/joy": "5.0.0-beta.21",
     "@mui/material": "^5.13.6",
+    "@nutui/nutui-react": "^2.3.5",
     "autoprefixer": "^10.4.14",
     "axios": "^1.4.0",
+    "dayjs": "^1.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-query": "^3.39.3",
-    "react-router-dom": "^6.13.0"
+    "react-router-dom": "^6.21.1"
   },
   "devDependencies": {
     "@types/node": "^20.3.1",
@@ -35,6 +38,7 @@
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.2",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vite-plugin-imp": "^2.4.0"
   }
 }

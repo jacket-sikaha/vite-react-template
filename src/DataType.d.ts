@@ -26,3 +26,10 @@ declare interface UserMsgDatatype {
   fans: number;
   likes: number;
 }
+
+declare interface ArticleDatatype {
+  id: number;
+  userId: number;
+  title: string;
+  body: string;
+}

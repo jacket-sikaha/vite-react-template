@@ -1,27 +1,25 @@
 import "./App.css";
 import Layout from "./components/layout";
-import Footer from "./components/footer";
-import { Route, Routes } from "react-router-dom";
-import NotFound from "./pages/NotFound";
-import Home from "./pages/Home";
+import { Outlet, Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
-import Personal from "./pages/Personal";
-import PostNote from "./pages/PostNote";
+import Home from "./pages/home";
+import { QueryClient, QueryClientProvider } from "react-query";
+// 创建一个 client
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <>
-      <Layout />
-      <Box width="100%">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {/* <Route index element={<Home />} /> */}
-          <Route path="postNote" element={<PostNote />} />
-          <Route path="personal" element={<Personal />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Box>
-      <Footer />
+      <QueryClientProvider client={queryClient}>
+        <div className="flex w-[93vw] h-full">
+          <div className="flex-none">
+            <Layout />
+          </div>
+          <div className="flex-1">
+            <Outlet />
+          </div>
+        </div>
+      </QueryClientProvider>
     </>
   );
 }
