@@ -5,7 +5,7 @@ import { lazy } from "react";
 import FilterList from "../pages/filterList/index.tsx";
 
 // const Home = () => import("../pages/home.tsx");
-// const FilterList = lazy(() => import("../pages/filterList.tsx"));
+// const FilterList = lazy(() => import("../pages/filterList"));
 
 export const DefaultRoutes = [
   {
@@ -21,7 +21,7 @@ export const DefaultRoutes = [
         path: "filterList",
         name: "条件筛选+无限滚动列表",
         element: <FilterList />,
-        // lazy: () => import("../pages/filterList.tsx"),
+        // lazy: () => import("../pages/filterList"),
       },
     ],
   },

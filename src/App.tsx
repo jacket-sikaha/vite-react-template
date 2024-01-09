@@ -11,13 +11,11 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <div className="flex w-[93vw] h-full">
-          <div className="flex-none">
-            <Layout />
-          </div>
-          <div className="flex-1">
-            <Outlet />
-          </div>
+        <div className="w-[93vw] h-full">
+          <Outlet />
+        </div>
+        <div className="sticky bottom-8 z-10">
+          <Layout />
         </div>
       </QueryClientProvider>
     </>

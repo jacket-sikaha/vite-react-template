@@ -13,7 +13,6 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",
-    "@mui/joy": "5.0.0-beta.21",
     "@mui/material": "^5.13.6",
     "@nutui/nutui-react": "^2.3.5",
     "autoprefixer": "^10.4.14",

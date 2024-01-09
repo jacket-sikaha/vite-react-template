@@ -1,56 +1,58 @@
 import React, { memo, useMemo, useState } from "react";
-import Box from "@mui/joy/Box";
-import Drawer from "@mui/joy/Drawer";
-import List from "@mui/joy/List";
-import Divider from "@mui/joy/Divider";
-import ListItem from "@mui/joy/ListItem";
-import ListItemButton from "@mui/joy/ListItemButton";
-import Menu from "@mui/icons-material/Menu";
-import IconButton from "@mui/joy/IconButton";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { DefaultRoutes } from "../config/route";
 import { Link } from "react-router-dom";
 
 const Layout = () => {
-  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
   const pathList = useMemo(() => {
     return DefaultRoutes[0].children.map(({ path, name }) => ({ path, name }));
   }, []);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <div className="w-full h-full">
+    <>
       <IconButton
-        variant="outlined"
-        color="neutral"
-        onClick={() => setOpen(true)}
+        aria-label="more"
+        id="long-button"
+        aria-controls={open ? "long-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
+        aria-haspopup="true"
+        onClick={handleClick}
       >
-        <Menu />
+        <MoreVertIcon />
       </IconButton>
-      <Drawer size={"sm"} open={open} onClose={() => setOpen(false)}>
-        <Box
-          role="presentation"
-          onClick={() => setOpen(false)}
-          onKeyDown={() => setOpen(false)}
-        >
-          <List>
-            {pathList.map(({ path, name }) => (
-              <ListItem key={path}>
-                <ListItemButton>
-                  <Link to={path}>{name}</Link>
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {["All mail", "Trash", "Spam"].map((text) => (
-              <ListItem key={text}>
-                <ListItemButton>{text}</ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
-    </div>
+      <Menu
+        id="long-menu"
+        MenuListProps={{
+          "aria-labelledby": "long-button",
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            maxHeight: 450,
+            width: "20ch",
+          },
+        }}
+      >
+        {pathList.map(({ path, name }) => (
+          <MenuItem key={path} onClick={handleClose}>
+            <Link to={path}>{name}</Link>
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 };
 
