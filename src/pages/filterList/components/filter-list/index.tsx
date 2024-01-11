@@ -7,7 +7,7 @@ import {
 } from "@nutui/nutui-react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { ListItem } from "../filter-list-item";
 import "./index.css";
 dayjs.extend(customParseFormat);
@@ -22,10 +22,12 @@ type FilterListProps = {
     handleFilterChange: (filters: any) => Promise<void>;
   };
   isRepairPage?: boolean;
+  className?: string;
+  style?: CSSProperties;
 };
 
 function FilterList(props: FilterListProps) {
-  const { tabList, filterListSetting, isRepairPage } = props;
+  const { tabList, filterListSetting, className, style } = props;
   const { refreshList, refreshHasMore, refreshLoadMore, handleFilterChange } =
     filterListSetting;
 
@@ -55,7 +57,7 @@ function FilterList(props: FilterListProps) {
   }, []);
 
   return (
-    <>
+    <div className={className} style={style}>
       <Cell
         title="日期区间"
         description={
@@ -129,7 +131,7 @@ function FilterList(props: FilterListProps) {
           );
         })}
       </Tabs>
-    </>
+    </div>
   );
 }
 
