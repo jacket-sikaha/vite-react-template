@@ -23,10 +23,10 @@ function Footer() {
                 navigate("/");
                 break;
               case 1:
-                navigate("/postNote");
+                navigate("/redux");
                 break;
               default:
-                navigate("/personal");
+                navigate("/about");
                 break;
             }
             setValue(newValue);
