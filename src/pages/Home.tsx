@@ -1,49 +1,27 @@
-import Paper from "@mui/material/Paper";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import {
-  styled,
-  createTheme,
-  ThemeProvider,
-  useTheme,
-} from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useEffect, useRef, useState } from "react";
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
   Chip,
   CircularProgress,
-  Container,
   IconButton,
   Stack,
-  Tab,
-  Tabs,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import { useQuery } from "react-query";
 import { getNotes } from "../services/note";
-import InfiniteScroll from "react-infinite-scroll-component";
-
-const Item = styled(Paper)(({ theme }) => {
-  return {
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    color: theme.palette.text.secondary,
-    flexGrow: 1,
-    margin: 1,
-  };
-});
 
 const tabList = ["推荐", "穿搭", "美食", "彩妆", "影视", "职场"];
 
 const StyleCard = (props: NoteDatatype) => {
-  const { id, username, userAvatar, title, content, images, likes, index } =
-    props;
+  const { username, userAvatar, title, images, likes } = props;
   return (
     <Card
       sx={{
@@ -103,7 +81,7 @@ const StyleCard = (props: NoteDatatype) => {
               />
             </IconButton>
             <Typography variant="caption" display="block">
-              {index || likes}
+              {likes}
             </Typography>
           </Stack>
         </Stack>
@@ -128,7 +106,7 @@ export default function Home() {
     (xs ? 1 : 0) + (sm ? 1 : 0) + (md ? 1 : 0) + (lg ? 1 : 0) + 1;
 
   // 查询
-  const { data, isFetching } = useQuery({
+  const { isFetching } = useQuery({
     queryKey: ["frp-status", page, myColumn],
     queryFn: () => getNotes(page, myColumn * 5),
     onSuccess(data) {
@@ -150,7 +128,7 @@ export default function Home() {
     },
   });
 
-  const handleClick = (event: React.SyntheticEvent, index: number): void => {
+  const handleClick = (_event: React.SyntheticEvent, index: number): void => {
     setSelectTab(() => {
       const temp = [];
       temp[index] = 1;
@@ -163,7 +141,7 @@ export default function Home() {
   }, [myColumn]);
 
   useEffect(() => {
-    const scrollFetchData = (e) => {
+    const scrollFetchData = () => {
       const scrollBarHeight = Math.abs(
         window.innerHeight - document.body.clientHeight
       );
@@ -216,9 +194,11 @@ export default function Home() {
             {[...new Array(myColumn)].map((_, i) => {
               return (
                 <Stack direction="column" key={i} spacing={1}>
-                  {(dataSource.get(i) ?? []).map((obj: NoteDatatype, index) => (
-                    <StyleCard key={obj.id} index={index} {...obj} />
-                  ))}
+                  {(dataSource.get(i) ?? []).map(
+                    (obj: NoteDatatype, _index) => (
+                      <StyleCard key={obj.id} {...obj} />
+                    )
+                  )}
                 </Stack>
               );
             })}
@@ -230,25 +210,6 @@ export default function Home() {
             </Box>
           )}
         </Box>
-      </div>
-    </>
-  );
-}
-function MyComponent() {
-  const theme = useTheme();
-  const xs = useMediaQuery(theme.breakpoints.up("xs"));
-  const sm = useMediaQuery(theme.breakpoints.up("sm"));
-  const md = useMediaQuery(theme.breakpoints.up("md"));
-  const lg = useMediaQuery(theme.breakpoints.up("lg"));
-
-  return (
-    <>
-      <div>{`theme.breakpoints.up('xs') matches: ${xs}`}</div>
-      <div>{`theme.breakpoints.up('sm') matches: ${sm}`}</div>
-      <div>{`theme.breakpoints.up('md') matches: ${md}`}</div>
-      <div>{`theme.breakpoints.up('lg') matches: ${lg}`}</div>
-      <div>
-        column{(xs ? 1 : 0) + (sm ? 1 : 0) + (md ? 1 : 0) + (lg ? 1 : 0) + 1}
       </div>
     </>
   );

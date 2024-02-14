@@ -1,11 +1,4 @@
-import {
-  Box,
-  Typography,
-  IconButton,
-  BottomNavigation,
-  BottomNavigationAction,
-  Paper,
-} from "@mui/material";
+import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import RestoreIcon from "@mui/icons-material/Restore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
@@ -24,7 +17,7 @@ function Footer() {
         <BottomNavigation
           showLabels
           value={value}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             switch (newValue) {
               case 0:
                 navigate("/");
