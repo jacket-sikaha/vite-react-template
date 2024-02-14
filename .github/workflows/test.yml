@@ -26,20 +26,23 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # Run a build step here if your project requires
-      - name: Cloudflare Pages GitHub Action
-        uses: cloudflare/pages-action@v1.5.0
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: test-cf-action
-          directory: ./
-          # Optional: Enable this if you want to have GitHub Deployments triggered
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          # Optional: Switch what branch you are publishing to.
-          # By default this will be the branch which triggered this workflow
-          branch: action
-          # Optional: Change the working directory
-          workingDirectory: ./dist
-          # Optional: Change the Wrangler version, allows you to point to a specific version or a tag such as `beta`
-          wranglerVersion: "3"
+      - name: Preview
+        run: pnpm preview
+
+        # Run a build step here if your project requires
+        # - name: Cloudflare Pages GitHub Action
+        # uses: cloudflare/pages-action@v1.5.0
+        # with:
+        #   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        #   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        #   projectName: test-cf-action
+        #   directory: ./
+        #   # Optional: Enable this if you want to have GitHub Deployments triggered
+        #   gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        #   # Optional: Switch what branch you are publishing to.
+        #   # By default this will be the branch which triggered this workflow
+        #   branch: action
+        #   # Optional: Change the working directory
+        #   workingDirectory: ./dist
+        #   # Optional: Change the Wrangler version, allows you to point to a specific version or a tag such as `beta`
+        #   wranglerVersion: "3"
