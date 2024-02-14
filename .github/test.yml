@@ -1,15 +1,12 @@
-name: Deploy to Cloudflare Pages
+on: [push]
 
-on:
-  push:
-    branches:
-      - action # 修改为您的主要分支名称
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       deployments: write
+
     name: Publish to Cloudflare Pages
     steps:
       - name: Checkout
