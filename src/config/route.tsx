@@ -1,11 +1,12 @@
-import { RouteObject } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import App from "../App.tsx";
-import Home from "../pages/home.tsx";
-import { lazy } from "react";
-import FilterList from "../pages/filterList/index.tsx";
+import Home from "../pages/home/index";
+import Theme from "../pages/theme/index";
+// import FilterList from "../pages/filterList/index.tsx";
 
 // const Home = () => import("../pages/home.tsx");
-// const FilterList = lazy(() => import("../pages/filterList"));
+const FilterList = lazy(() => import("../pages/filterList"));
+// const Theme = lazy(() => import("../pages/theme"));
 
 export const DefaultRoutes = [
   {
@@ -20,8 +21,17 @@ export const DefaultRoutes = [
       {
         path: "filterList",
         name: "条件筛选+无限滚动列表",
-        element: <FilterList />,
-        // lazy: () => import("../pages/filterList"),
+        element: (
+          <Suspense fallback={<h1>loading</h1>}>
+            <FilterList />
+          </Suspense>
+        ),
+        // lazy: () => <FilterList />,
+      },
+      {
+        path: "theme",
+        name: "多种主题切换",
+        element: <Theme />,
       },
     ],
   },

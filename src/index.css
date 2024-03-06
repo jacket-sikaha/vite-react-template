@@ -2,6 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --primary: #a991f7;
+    --secondary: #f6d860;
+    --accent: #37cdbe;
+    --neutral: #3d4451;
+    --color-primary: 255 115 179;
+    --color-secondary: 111 114 185;
+
+    --text1-light: color-mix(in oklab, var(--brand) 25%, black);
+    --surface1-light: color-mix(in oklab, var(--brand) 5%, white);
+    --text1-dark: color-mix(in oklab, var(--brand) 15%, white);
+    --surface1-dark: color-mix(in oklab, var(--brand) 5%, black);
+    --text1-dim: color-mix(in oklab, var(--brand) 20%, white);
+    --surface1-dim: color-mix(in oklab, var(--brand) 15%, lch(20% 0 0));
+  }
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --theme-primary: #ffffff;
+  --theme-text-color: black;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --theme-primary: #1d232a;
+  --theme-text-color: #a6adbb;
+}
+
+[data-theme="cupcake"] {
+  color-scheme: light;
+  --theme-primary: #faf7f5;
+  --theme-text-color: #291334;
+}
+
+[data-theme="retro"] {
+  color-scheme: light;
+  --theme-primary: #ece3ca;
+  --theme-text-color: #282425;
+}
+
+[data-theme="valentine"] {
+  color-scheme: light;
+  --theme-primary: #fae8f4;
+  --theme-text-color: #632c3b;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -19,12 +66,13 @@
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  /* 跟其他全局样式冲突时，提高其优先级  */
+  font-weight: 500 !important;
+  color: #646cff !important;
+  text-decoration: inherit !important;
 }
 a:hover {
-  color: #535bf2;
+  color: #535bf2 !important;
 }
 
 body {

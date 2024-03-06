@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import Loading from "../../components/loading";
 import FilterList from "./components/filter-list";
 import { useListHook } from "./hook";
 
