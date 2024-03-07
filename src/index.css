@@ -19,6 +19,7 @@
     --surface1-dim: color-mix(in oklab, var(--brand) 15%, lch(20% 0 0));
   }
 }
+/* 作用范围是带有这个data-theme="light"属性的元素及其子元素下 */
 [data-theme="light"] {
   color-scheme: light;
   --theme-primary: #ffffff;
