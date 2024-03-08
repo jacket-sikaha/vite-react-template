@@ -1,12 +1,13 @@
 import { Suspense, lazy } from "react";
 import App from "../App.tsx";
 import Home from "../pages/home/index";
-import Theme from "../pages/theme/index";
+// import Theme from "../pages/theme/index";
 // import FilterList from "../pages/filterList/index.tsx";
 
 // const Home = () => import("../pages/home.tsx");
+// react router6 + react lazy 延迟加载的正确写法
 const FilterList = lazy(() => import("../pages/filterList"));
-// const Theme = lazy(() => import("../pages/theme"));
+const Theme = lazy(() => import("../pages/theme"));
 
 export const DefaultRoutes = [
   {
@@ -31,7 +32,12 @@ export const DefaultRoutes = [
       {
         path: "theme",
         name: "多种主题切换",
-        element: <Theme />,
+        element: (
+          <Suspense fallback={<h1>loading</h1>}>
+            {/* 这里的Suspense就是只对Theme起作用 */}
+            <Theme />
+          </Suspense>
+        ),
       },
     ],
   },
