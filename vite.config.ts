@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 import { defineConfig, loadEnv } from 'vite';
 
 // const ORIGIN_SERVER = import.meta.env.VITE_ORIGIN_SERVER;
@@ -12,6 +13,15 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       react(),
     ],
+    resolve: {
+      // 配置别名 减少查找模块时间消耗
+      alias: [
+        {
+          find: '@',
+          replacement: resolve(__dirname, './src')
+        }
+      ]
+    },
     server: {
       proxy: {
         // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
