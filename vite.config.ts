@@ -19,6 +19,14 @@ export default defineConfig(({ command, mode }) => {
         {
           find: '@',
           replacement: resolve(__dirname, './src')
+        },
+        {
+          find: '@components',
+          replacement: resolve(__dirname, './src/components')
+        },
+        {
+          find: '@pages',
+          replacement: resolve(__dirname, './src/pages')
         }
       ]
     },
