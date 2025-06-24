@@ -1,6 +1,10 @@
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { defineConfig, loadEnv } from 'vite';
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
+import svgr from 'vite-plugin-svgr';
+import { visualizer } from 'rollup-plugin-visualizer';
+import viteCompression from 'vite-plugin-compression';
 
 // const ORIGIN_SERVER = import.meta.env.VITE_ORIGIN_SERVER;
 // https://vitejs.dev/config/
@@ -12,6 +16,22 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [
       react(),
+      svgr(),
+      ViteImageOptimizer({
+        png: { quality: 80 },
+        jpeg: { quality: 80 },
+        webp: { lossless: 1 },
+        avif: { lossless: 1 }
+      }),
+      viteCompression({
+        algorithm: 'gzip',
+        threshold: 10240,
+        ext: '.gz'
+      }),
+      visualizer({
+        open: process.env.NODE_ENV === 'production',
+        filename: 'bundle-analysis.html'
+      })
     ],
     resolve: {
       // 配置别名 减少查找模块时间消耗
@@ -29,6 +49,23 @@ export default defineConfig(({ command, mode }) => {
           replacement: resolve(__dirname, './src/pages')
         }
       ]
+    },
+    build: {
+      target: 'es2020',
+      cssCodeSplit: true,
+      sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            mui: ['@mui/material', '@mui/icons-material'],
+            utils: ['axios', 'dayjs']
+          },
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+        }
+      }
     },
     server: {
       proxy: {
