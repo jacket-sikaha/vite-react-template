@@ -1,10 +1,10 @@
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { defineConfig, loadEnv } from 'vite';
-import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
-import svgr from 'vite-plugin-svgr';
+// import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import { visualizer } from 'rollup-plugin-visualizer';
 import viteCompression from 'vite-plugin-compression';
+import svgr from 'vite-plugin-svgr';
 
 // const ORIGIN_SERVER = import.meta.env.VITE_ORIGIN_SERVER;
 // https://vitejs.dev/config/
@@ -17,12 +17,6 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       react(),
       svgr(),
-      ViteImageOptimizer({
-        png: { quality: 80 },
-        jpeg: { quality: 80 },
-        webp: { lossless: 1 },
-        avif: { lossless: 1 }
-      }),
       viteCompression({
         algorithm: 'gzip',
         threshold: 10240,

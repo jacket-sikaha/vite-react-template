@@ -1,6 +1,7 @@
+import App from '@/App';
+import Home from '@/pages/home';
 import { Suspense, lazy } from 'react';
-import App from '../App.tsx';
-import Home from '../pages/home/index';
+
 // import Theme from "../pages/theme/index";
 
 // const Home = () => import("../pages/home.tsx");
