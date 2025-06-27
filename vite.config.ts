@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import { resolve } from 'path';
 import { defineConfig, loadEnv } from 'vite';
 // import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
@@ -16,6 +17,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [
       react(),
+      tsconfigPaths(),
       svgr(),
       viteCompression({
         algorithm: 'gzip',
@@ -28,21 +30,8 @@ export default defineConfig(({ command, mode }) => {
       })
     ],
     resolve: {
-      // 配置别名 减少查找模块时间消耗
-      alias: [
-        {
-          find: '@',
-          replacement: resolve(__dirname, './src')
-        },
-        {
-          find: '@components',
-          replacement: resolve(__dirname, './src/components')
-        },
-        {
-          find: '@pages',
-          replacement: resolve(__dirname, './src/pages')
-        }
-      ]
+      // 路径别名由vite-tsconfig-paths插件自动从tsconfig.json读取
+      alias: []
     },
     build: {
       target: 'es2020',
