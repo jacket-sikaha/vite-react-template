@@ -2,7 +2,8 @@
 module.exports = {
   plugins: [
     'prettier-plugin-organize-imports', // 去掉无用依赖/参数的格式化插件
-    'prettier-plugin-tailwindcss' // 自动排序twcss的 className
+    'prettier-plugin-tailwindcss', // 自动排序twcss的 className
+    'prettier-plugin-classnames'
   ],
   printWidth: 100, //一行的字符数，如果超过会进行换行，默认为80
   tabWidth: 2, // 一个 tab 代表几个空格数，默认为 2 个
