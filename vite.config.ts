@@ -47,6 +47,10 @@ export default defineConfig(({ command, mode }) => {
           entryFileNames: 'assets/js/[name]-[hash].js',
           assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
         }
+      },
+      esbuild: {
+        dropconsole: true, // 生产环境移除console
+        dropdebugger: true // 移除debugger
       }
     },
     server: {
