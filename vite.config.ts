@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths';
+// import tsconfigPaths from 'vite-tsconfig-paths';
 // import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import { visualizer } from 'rollup-plugin-visualizer';
 import viteCompression from 'vite-plugin-compression';
@@ -17,7 +17,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
-      tsconfigPaths(),
+      // vite 8 版本以上需要使用 tsconfigPaths 插件来解析路径别名
+      // tsconfigPaths(),
       svgr(),
       viteCompression({
         algorithm: 'gzip',
@@ -30,6 +31,8 @@ export default defineConfig(({ mode }) => {
       })
     ],
     resolve: {
+      // 启用 Vite 原生的 tsconfig paths 解析（替代插件）
+      tsconfigPaths: true,
       // 路径别名由vite-tsconfig-paths插件自动从tsconfig.json读取
       alias: []
     },
